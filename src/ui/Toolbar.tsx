@@ -29,8 +29,31 @@ export const Toolbar: React.FC = () => {
                         icon={<Eraser size={18} />}
                         label="Erase"
                     />
+                    <ToolButton
+                        active={store.tool === 'shape'}
+                        onClick={() => store.setTool('shape')}
+                        icon={<Move3d size={18} />}
+                        label="Shapes"
+                    />
                 </div>
             </div>
+
+            {store.tool === 'shape' && (
+                <div className="flex flex-col gap-2">
+                    <label className="text-[10px] uppercase tracking-tighter text-white/40 font-bold px-1">Primitive</label>
+                    <div className="grid grid-cols-2 gap-1">
+                        {(['sphere', 'box', 'tube', 'plane'] as const).map(s => (
+                            <button
+                                key={s}
+                                onClick={() => store.setShapeType(s)}
+                                className={`px-2 py-1.5 rounded-lg text-[10px] uppercase font-bold transition-all ${store.shapeType === s ? 'bg-white/20 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+                            >
+                                {s}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="h-px bg-white/10 mx-1" />
 

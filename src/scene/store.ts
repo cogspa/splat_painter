@@ -1,11 +1,13 @@
 import { create } from "zustand";
 
-export type ToolType = "spray" | "paint" | "eraser";
+export type ToolType = "spray" | "paint" | "eraser" | "shape";
 export type ModeType = "plane" | "depth";
 export type PlaneAxis = "x" | "y" | "z" | "none";
+export type ShapeType = "sphere" | "box" | "tube" | "plane";
 
 interface AppState {
     tool: ToolType;
+    shapeType: ShapeType;
     mode: ModeType;
     planeAxis: PlaneAxis;
     planeOffset: number;
@@ -16,6 +18,7 @@ interface AppState {
     brushOpacity: number;
 
     setTool: (tool: ToolType) => void;
+    setShapeType: (shape: ShapeType) => void;
     setMode: (mode: ModeType) => void;
     setPlaneAxis: (axis: PlaneAxis) => void;
     setPlaneOffset: (offset: number) => void;
@@ -28,6 +31,7 @@ interface AppState {
 
 export const useStore = create<AppState>((set) => ({
     tool: "spray",
+    shapeType: "sphere",
     mode: "plane",
     planeAxis: "y",
     planeOffset: 0,
@@ -38,6 +42,7 @@ export const useStore = create<AppState>((set) => ({
     brushOpacity: 0.5,
 
     setTool: (tool) => set({ tool }),
+    setShapeType: (shapeType) => set({ shapeType }),
     setMode: (mode) => set({ mode }),
     setPlaneAxis: (planeAxis) => set({ planeAxis }),
     setPlaneOffset: (planeOffset) => set({ planeOffset }),

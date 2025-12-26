@@ -10,7 +10,11 @@ export class BrushEngine {
         return [p.clone()];
     }
 
-    continueStroke(p: Vector3) {
+    isFirstPoint() {
+        return this.lastP === null;
+    }
+
+    continueStroke(p: Vector3): Vector3[] {
         if (!this.lastP) return this.beginStroke(p);
 
         const out: Vector3[] = [];

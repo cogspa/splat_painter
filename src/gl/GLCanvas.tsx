@@ -7,6 +7,7 @@ import { SplatStore } from '../scene/SplatStore';
 import { useStore } from '../scene/store';
 import { BrushEngine } from '../tools/BrushEngine';
 import { getRay, intersectPlane, unproject } from '../math/math_utils';
+import { generateSplatShape } from '../math/shape_utils';
 import idVert from './shaders/id.vert.glsl?raw';
 import idFrag from './shaders/id.frag.glsl?raw';
 import planeVert from './shaders/plane.vert.glsl?raw';
@@ -366,12 +367,13 @@ export const GLCanvas: React.FC = () => {
 
         if (!p) return;
 
+        const isFirstPoint = brushEngine.current.isFirstPoint();
         const dabs = brushEngine.current.continueStroke(p);
-        if (dabs.length === 0) return;
 
         const rgb = new THREE.Color(store.color);
 
         if (store.tool === 'spray') {
+            if (dabs.length === 0) return;
             for (const dab of dabs) {
                 const batch = [];
                 for (let i = 0; i < store.brushDensity; i++) {
@@ -388,7 +390,21 @@ export const GLCanvas: React.FC = () => {
                 }
                 splatStore.current.addMany(batch);
             }
+        } else if (store.tool === 'shape') {
+            if (isFirstPoint) {
+                const batch = generateSplatShape(
+                    store.shapeType,
+                    p,
+                    store.brushRadius,
+                    rgb,
+                    store.brushOpacity,
+                    store.brushSize,
+                    store.brushDensity
+                );
+                splatStore.current.addMany(batch);
+            }
         } else {
+            if (dabs.length === 0) return;
             // Recolor or Erase: Read IDs in a small radius
             const radiusPx = Math.max(1, Math.round(store.brushRadius * 50)); // heuristic mapping
             const size = radiusPx * 2;
